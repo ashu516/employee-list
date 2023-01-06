@@ -1,0 +1,201 @@
+<div class="header">
+  <h1>Employee List</h1>
+</div>
+<form #employeeForm="ngForm">
+  <div class="employee-data">
+    <table class="employee-table">
+      <thead>
+        <tr>
+          <th *ngFor="let header of tableHeaders" [width]="header.width">
+            {{ header.name }}
+          </th>
+          <th class="action-header">
+            <span>Action</span>
+            <button
+              title="Add Employee"
+              class="btn action-btn"
+              (click)="openModal('details-modal', 'Add')"
+            >
+              <i class="fa fa-user-plus"></i>
+            </button>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td></td>
+          <td>
+            <input
+              class="search-input"
+              type="text"
+              placeholder="Search by Name"
+              name="name"
+              ngModel
+            />
+          </td>
+          <td>
+            <select
+              name="jobTitle"
+              id="job-title"
+              class="search-input job-title-height"
+              ngModel
+            >
+              <option disabled selected value></option>
+              <option [value]="title.title" *ngFor="let title of jobTitles">
+                {{ title.title }}
+              </option>
+            </select>
+          </td>
+          <td>
+            <input
+              type="text"
+              pattern="\d*"
+              maxlength="3"
+              class="age-search-input"
+              name="age"
+              ngModel
+            />
+          </td>
+          <td>
+            <input
+              type="date"
+              id="start-date"
+              name="startDate"
+              class="search-input date-picker-height"
+              ngModel
+            />
+          </td>
+          <td>
+            <input
+              type="date"
+              id="end-date"
+              name="endDate"
+              class="search-input date-picker-height"
+              ngModel
+            />
+          </td>
+          <td>
+            <div class="actions">
+              <button
+                class="btn"
+                title="Filter"
+                (click)="onFilterClick(employeeForm.value)"
+              >
+                <i class="fa fa-filter"></i>
+              </button>
+              <button
+                class="btn"
+                title="Reset"
+                (click)="resetFilter(employeeForm)"
+              >
+                <i class="fa fa-times"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+        <tr *ngFor="let data of employeeData">
+          <td>{{ data.id }}</td>
+          <td>{{ data.name }}</td>
+          <td>{{ data.jobTitle }}</td>
+          <td>{{ data.age }}</td>
+          <td>{{ data.startDate }}</td>
+          <td *ngIf="data.endDate">{{ data.endDate }}</td>
+          <td *ngIf="!data.endDate">
+            <button class="currently-working">{{ CurrentlyWorking }}</button>
+          </td>
+          <td>
+            <div class="actions">
+              <button
+                title="View Details"
+                class="btn"
+                (click)="openModal('details-modal', 'Update', data)"
+              >
+                <i class="fa fa-eye"></i>
+              </button>
+              <button
+                class="btn"
+                title="Delete"
+                (click)="deleteEmployee(data.id)"
+              >
+                <i class="fa fa-trash"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</form>
+<jw-modal id="details-modal">
+  <div class="selected-employee-container">
+    <div class="selected-employee" *ngIf="selectedData">
+      <div class="emp-data">
+        <label class="emp-label">Name</label>
+        <input
+          type="text"
+          class="search-input"
+          [(ngModel)]="selectedData.name"
+        />
+      </div>
+      <div class="emp-data">
+        <label class="emp-label">Job Title</label>
+        <select
+          name="jobTitle"
+          id="job-title"
+          class="search-input job-title-height"
+          [(ngModel)]="selectedData.jobTitle"
+        >
+          <option [value]="title.title" *ngFor="let title of jobTitles">
+            {{ title.title }}
+          </option>
+        </select>
+      </div>
+
+      <div class="emp-data">
+        <label class="emp-label">Age</label>
+        <input
+          type="text"
+          pattern="\d*"
+          maxlength="3"
+          class="age-search-input"
+          name="age"
+          [(ngModel)]="selectedData.age"
+        />
+      </div>
+
+      <div class="emp-data">
+        <label class="emp-label">Start Date</label>
+        <input
+          type="date"
+          id="start-date"
+          name="startDate"
+          class="search-input date-picker-height"
+          [(ngModel)]="selectedData.startDate"
+        />
+      </div>
+
+      <div class="emp-data">
+        <label class="emp-label">End Date</label
+        ><input
+          type="date"
+          id="end-date"
+          name="endDate"
+          class="search-input date-picker-height"
+          [(ngModel)]="selectedData.endDate"
+        />
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-actions" *ngIf="selectedData">
+    <button
+      class="btn modal-btn"
+      (click)="updateEmployeeDetails('details-modal')"
+    >
+      {{ selectedData.type }} Details
+    </button>
+    <button class="btn modal-btn" (click)="closeModal('details-modal')">
+      Cancel
+    </button>
+  </div>
+</jw-modal>
